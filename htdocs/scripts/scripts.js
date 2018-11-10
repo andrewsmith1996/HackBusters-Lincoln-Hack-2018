@@ -34,19 +34,42 @@ $(function () {
         });
     }
 
-    socket.on('move_on', function(data){
-        let client_id = 0;
+    socket.on("move_on", function(data){
 
-        for (var i = 0; i < data.devices.length; i++){
-            if (data.devices[i].screen == (data.screen + 1)){
-                client_id =  devices[i].client_id;
+        // alert("RECIEVED AT SCREEN " + data.screen);
+        // alert($("#plane").length);
+
+        $("#plane").show();
+
+       
+        // $("#plane").css
+        // while(xPos != (data.screenWidth - 50)){
+    
+            // }
+        $('#plane').css('left',"0px");
+       
+    
+        let xPos = 0;
+        timer = setInterval (function () { // timer to move element slowly
+            xPos++;
+            $('#plane').css('left',xPos + "px");
+            if (xPos == data.screenWidth){
+                clearInterval(timer);
+                socket.emit("moved", data);
+
             }
-        }
 
-        socket.broadcast.to(client_id).emit("move_on");
+            // if(data.screen < data.devices.length - 1){
+            // } else{
+                // socket.emit("finished", data);
+            // }
+            
+        }, 1);
+       
     });
     
 });
+
 
 function startGame(){
 

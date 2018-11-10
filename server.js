@@ -8,6 +8,7 @@ app.get('/', function(req, res){
 });
 
 var devices = [];
+var screen_count = 1;
 
 io.on('connection', function(socket){    
     console.log('a user connected');
@@ -39,25 +40,60 @@ io.on('connection', function(socket){
     });
 
     socket.on('ready', function(){
+       
+        let client_id = 0;
+        var data = {};
+
+        for (var i = 0; i < devices.length; i++){
+            if (devices[i].buttonRef == screen_count){
+                client_id = devices[i].client_id;
+                
+                data = {
+                    client_id:client_id,
+                    screen: screen_count,
+                    devices:devices,
+                    screenWidth:devices[i].deviceWidth,
+                    screenHeight:devices[i].deviceHeight,
+                }
+            }
+        }
+      
+    
+        console.log("Emitting to client " + client_id + " screen " + data.screen);
+        socket.broadcast.to(client_id).emit("move_on", data);
+    });
+
+    socket.on("moved", function(data){
         
         let client_id = 0;
-      
+
+        var data = {};
+
+        screen_count++;
+        
         for (var i = 0; i < devices.length; i++){
-            // look for the entry with a matching `code` value
-            if (devices[i].buttonRef == 1){
-   
-                client_id =  devices[i].client_id;
+            if (devices[i].buttonRef == screen_count){
+                client_id = devices[i].client_id;
+                
+                data = {
+                    client_id:client_id,
+                    screen: screen_count,
+                    devices:data.devices,
+                    screenWidth:devices[i].deviceWidth,
+                    screenHeight:devices[i].deviceHeight,
+                }
             }
         }
         
-        var data = {
-            client_id:client_id,
-            screen: 0,
-            devices:devices
-        }
+
+
+        console.log("Emitting to client " + client_id + " screen " + screen_count);
         socket.broadcast.to(client_id).emit("move_on", data);
     });
-   
+
+    socket.on("finished", function(data){
+        console.log("GAME OVER");
+    });
 
 
   });
