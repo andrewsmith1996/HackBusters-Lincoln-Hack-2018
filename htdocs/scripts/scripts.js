@@ -9,12 +9,34 @@ $(function () {
     var down_timer;
     const speed = 1;
 
-    $(".select-screen button").click(function() {
+    $('.introduction button').click(function(){
+        $('.introduction').fadeOut();
+        $(".select-screen").fadeIn();
+    });
 
+    $(".select-screen button").click(function() {
         if($(this).attr('data-ref') != "viewer"){
             $(".ready-screen").hide();
+            $(".select-screen").hide();
             $(".game-over-screen").hide();
             $('body').addClass('play');
+
+            if($(this).attr('data-ref') != 1){
+
+                var maxObstacleHeight = window.innerWidth / 2;
+                var minObstacleHeight = 50
+    
+                var b = window.innerHeight - 60;
+                var a = 80;
+    
+                $('.play-screen .obstacle').each(function(){
+                    $(this).show();
+                    $(this).css("top", Math.floor((Math.random() * b) + a)) + "px";
+                    $(this).css("width", Math.floor((Math.random() * maxObstacleHeight) + minObstacleHeight)) + "px";
+                });
+
+            }    
+
         }
 
         const data = {
@@ -82,16 +104,6 @@ $(function () {
 
     
 
-        // var x = 10;
-        // var y = 60;
-
-        // var a = 20;
-        // var b = data.screenHeight - 20;
-
-        // $('.play-screen .obstacle').each(function(){
-        //     $(this).css("width", Math.floor((Math.random() * y) + x)) + "px";
-        //     $(this).css("y", Math.floor((Math.random() * b) + a)) + "px";
-        // });
 
         let yPos = data.yPos;
         let xPos = data.xPos;  
@@ -132,7 +144,6 @@ $(function () {
         $(".play-screen").fadeOut();
         $(".ready-screen").fadeOut();
         $(".select-screen").fadeOut();
-
         $(".game-over-screen").fadeIn();
     });
     
