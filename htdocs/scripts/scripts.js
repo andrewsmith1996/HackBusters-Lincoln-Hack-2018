@@ -11,6 +11,12 @@ $(function () {
 
     $(".select-screen button").click(function() {
 
+        if($(this).attr('data-ref') != "viewer"){
+            $(".ready-screen").hide();
+            $(".game-over-screen").hide();
+            $('body').addClass('play');
+        }
+
         const data = {
             buttonRef:$(this).attr('data-ref'),
             height: window.innerHeight,
@@ -19,12 +25,14 @@ $(function () {
         }
 
         socket.emit('device-connected', data);
+        
         $('.select-screen').fadeOut('slow');
         $('.ready-screen').fadeIn('slow');
 
         return false;
     });
 
+    
 
     socket.on('viewer', function(data){
 
@@ -72,6 +80,19 @@ $(function () {
 
     socket.on("move_on", function(data){
 
+    
+
+        // var x = 10;
+        // var y = 60;
+
+        // var a = 20;
+        // var b = data.screenHeight - 20;
+
+        // $('.play-screen .obstacle').each(function(){
+        //     $(this).css("width", Math.floor((Math.random() * y) + x)) + "px";
+        //     $(this).css("y", Math.floor((Math.random() * b) + a)) + "px";
+        // });
+
         let yPos = data.yPos;
         let xPos = data.xPos;  
 
@@ -86,6 +107,10 @@ $(function () {
         timer = setInterval (function () { // timer to move element slowly
             yPos++;
             $('#plane').css('top',yPos + "px");
+            setTimeout(function(){
+                $("#plane:after").css("background-position", "0 -20px");
+            }, 100);
+            $("#plane:after").css("background-position", "0 -20px");
             if (yPos == data.screenHeight){
                 if(data.screen == data.devices.length - 1){
                     clearInterval(timer);
