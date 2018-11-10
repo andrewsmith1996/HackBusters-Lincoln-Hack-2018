@@ -5,7 +5,8 @@ $(function () {
     var socket = io('http://10.69.3.151:1797');
     var screenHeight = $(window).innerHeight;
     var screenWidth = $(window).innerWidth;
-
+    var up_timer;
+    
     $(".select-screen button").click(function() {
 
         const data = {
@@ -19,26 +20,51 @@ $(function () {
         $('.select-screen').fadeOut('slow');
         $('.ready-screen').fadeIn('slow');
 
-        // startGame();
         return false;
     });
 
 
     socket.on('viewer', function(data){
+
         $('.ready-screen .play-button').fadeIn();
+
+        if($('.ready-screen .play-button').length > 0){
+            $(".ready-screen .play-button").click(function() {
+       
+                socket.emit('ready');
+
+                $(".ready-screen .play-button").hide();
+                $(".ready-screen .hover-button").css("display", "block");
+    
+                $('.ready-screen .hover-button').on('mousedown', function() {
+            
+                    socket.emit("up", screen);
+                }).on('mouseup mouseleave', function() {
+                    socket.emit("down", screen);
+                });
+            });
+        }
     });
 
-    if($('.ready-screen .play-button').length > 0){
-        $(".ready-screen .play-button").click(function() {
-            socket.emit('ready');
-        });
-    }
+    socket.on("up", function(data){
+        var offset = $("#plane").offset();
+        let xPos = offset.left; 
+        up_timer = setInterval (function () { // timer to move element slowly
+            xPos++;
+            $('#plane').css('left', xPos + "px");
+        }, 100);
+    });
 
+    socket.on("down", function(data){
+        clearInterval(up_timer);
+    });
+
+
+
+  
     socket.on("move_on", function(data){
 
-        // alert("RECIEVED AT SCREEN " + data.screen);
-        // alert($("#plane").length);
-
+      
         $("#plane").show();
 
        
@@ -46,25 +72,23 @@ $(function () {
         // while(xPos != (data.screenWidth - 50)){
     
             // }
-        $('#plane').css('left',"0px");
-       
-    
-        let xPos = 0;
+        $('#plane').css('top',"0px");
+        $('#plane').css('left', (data.screenWidth / 2) + "px");
+      
+        let yPos = 0;
+        var offset = $("#plane").offset();
+        let xPos = offset.left;      
+
         timer = setInterval (function () { // timer to move element slowly
-            xPos++;
-            $('#plane').css('left',xPos + "px");
-            if (xPos == data.screenWidth){
+            yPos++;
+            xPos--;
+            $('#plane').css('top',yPos + "px");
+            $('#plane').css('left', xPos + "px");
+            if (yPos == data.screenHeight){
                 clearInterval(timer);
                 socket.emit("moved", data);
-
             }
-
-            // if(data.screen < data.devices.length - 1){
-            // } else{
-                // socket.emit("finished", data);
-            // }
-            
-        }, 1);
+        }, 100);
        
     });
     

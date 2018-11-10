@@ -1,6 +1,4 @@
-body{
-    
-}
+
 
 .btn{
     margin-top:30px;
@@ -10,8 +8,30 @@ body{
 }
 
 .ready-screen{
+
     .play-button{
         display: none;
+    }
+
+    .hover-button{
+        display:none;
+        height:250px;
+        width:250px;
+        margin:0 auto;
+        background: orange;
+        border:0 none;
+        border-radius:200px;
+        margin-top:100px;
+        outline:none;
+        transition:all .2s;
+
+        &:active{
+            background: darken(orange, 5%);
+            -webkit-box-shadow: inset 0px 0px 10px #c1c1c1;
+               -moz-box-shadow: inset 0px 0px 10px #c1c1c1;
+                    box-shadow: inset 0px 0px 10px #c1c1c1;
+             outline: none;
+        }
     }
 }
 
@@ -26,7 +46,7 @@ body{
         background:green;
         position:absolute;
         top:0;
-        left:0;
+        left:50%;
         display:none;
     }
 }

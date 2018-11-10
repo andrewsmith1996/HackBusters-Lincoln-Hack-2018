@@ -58,10 +58,33 @@ io.on('connection', function(socket){
             }
         }
       
-    
         console.log("Emitting to client " + client_id + " screen " + data.screen);
         socket.broadcast.to(client_id).emit("move_on", data);
     });
+
+    socket.on("up", function(data){
+
+       let client_id = 0;
+        for (var i = 0; i < devices.length; i++){
+            if (devices[i].buttonRef == screen_count){
+                client_id = devices[i].client_id;
+            }
+        }
+
+        socket.broadcast.to(client_id).emit("up");
+    });
+
+    socket.on("down", function(data){
+
+        let client_id = 0;
+         for (var i = 0; i < devices.length; i++){
+             if (devices[i].buttonRef == screen_count){
+                 client_id = devices[i].client_id;
+             }
+         }
+
+         socket.broadcast.to(client_id).emit("down");
+     });
 
     socket.on("moved", function(data){
         
@@ -85,8 +108,6 @@ io.on('connection', function(socket){
             }
         }
         
-
-
         console.log("Emitting to client " + client_id + " screen " + screen_count);
         socket.broadcast.to(client_id).emit("move_on", data);
     });
