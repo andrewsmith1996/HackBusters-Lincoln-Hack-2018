@@ -34,10 +34,6 @@ io.on('connection', function(socket){
         }
     });
 
-    socket.on('game_over', function(data){
-        console.log("over");
-    });
-
     socket.on('ready', function(){
        
         let client_id = 0;
@@ -53,6 +49,8 @@ io.on('connection', function(socket){
                     devices:devices,
                     screenWidth:devices[i].deviceWidth,
                     screenHeight:devices[i].deviceHeight,
+                    xPos:((devices[i].deviceWidth / 2)) - 50,
+                    yPos:0
                 }
             }
         }
@@ -82,7 +80,7 @@ io.on('connection', function(socket){
         return client_id;
     }
 
-    socket.on("moved", function(data){
+    socket.on("moved", function(move_data){
         
         let client_id = 0;
 
@@ -100,6 +98,8 @@ io.on('connection', function(socket){
                     devices:devices,
                     screenWidth:devices[i].deviceWidth,
                     screenHeight:devices[i].deviceHeight,
+                    xPos: move_data.xPos,
+                    yPos: 0
                 }
             }
         }

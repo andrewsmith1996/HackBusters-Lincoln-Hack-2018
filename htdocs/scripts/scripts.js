@@ -72,13 +72,12 @@ $(function () {
 
     socket.on("move_on", function(data){
 
-        $("#plane").show();
-        $('#plane').css('top',"0px");
-      
-        let yPos = 0;
+        let yPos = data.yPos;
+        let xPos = data.xPos;  
 
-        var offset = $("#plane").offset();  
-        let xPos = offset.left; 
+        $("#plane").show();
+        $('#plane').css('top', yPos + "px");
+      
         down_timer = setInterval (function () {
             xPos--;
             $('#plane').css('left', xPos + "px");
@@ -91,9 +90,13 @@ $(function () {
                 if(data.screen == data.devices.length - 1){
                     clearInterval(timer);
                     socket.emit("game_over");
-                    socket.disconnect();
                 } else{
                     clearInterval(timer);
+                   
+                    data = {
+                        xPos: xPos,
+                        yPos: yPos
+                    }
                     socket.emit("moved", data);
                 }
             }
@@ -101,8 +104,11 @@ $(function () {
     });
 
     socket.on("game_end", function(screen){
-        $("*").fadeOut();
-        $("game-over-screen").fadeIn();
+        $(".play-screen").fadeOut();
+        $(".ready-screen").fadeOut();
+        $(".select-screen").fadeOut();
+
+        $(".game-over-screen").fadeIn();
     });
     
 });
