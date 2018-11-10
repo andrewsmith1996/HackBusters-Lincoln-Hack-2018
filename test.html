@@ -1,0 +1,50 @@
+
+
+<!doctype html>
+<html>
+  <head>
+    <title>Hackbusters</title>
+<style>
+
+    #plane{
+        height:126px;
+        width:50px;
+        background-image:url('/images/plane.png');
+        background-size:contain;
+        position:relative;
+        top:0;
+        left:50%;
+    }
+        #plane:after{
+            position:absolute;
+            bottom:-10px;
+            display:block;
+            content:'';
+            background-image:url('/images/prop.png');
+            background-repeat:no-repeat;
+            animation: propel .2s steps(4) infinite;
+            height:10px;
+            width:50px;
+        }
+
+        @keyframes propel{
+        0%{background-position: 0 0;}
+        100%{background-position: 0 40px;}
+      }
+    
+</style>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1.0">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="styles/styles.css" rel="stylesheet" type="text/css">
+
+    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+
+
+  </head>
+  <body>
+        <div id="plane"></div>
+    
+
+  </body>
+</html>

@@ -13,7 +13,6 @@ var screen_count = 1;
 io.on('connection', function(socket){    
 
     socket.send(socket.id);
-    
     socket.on('device-connected', function(data){
 
         console.log('Screen ' + data.buttonRef + ' has connected.');
@@ -24,7 +23,8 @@ io.on('connection', function(socket){
         device['deviceWidth'] = data.width;
         device['ready'] = data.ready;
         device['client_id'] = socket.id;
-       
+
+        
         console.log(device);
         devices.push(device);
 
@@ -49,8 +49,9 @@ io.on('connection', function(socket){
                     devices:devices,
                     screenWidth:devices[i].deviceWidth,
                     screenHeight:devices[i].deviceHeight,
-                    xPos:((devices[i].deviceWidth / 2)) - 50,
-                    yPos:0
+                    xPos:((devices[i].deviceWidth / 2)) - 35,
+                    yPos:0,
+                    score:0
                 }
             }
         }
@@ -99,7 +100,8 @@ io.on('connection', function(socket){
                     screenWidth:devices[i].deviceWidth,
                     screenHeight:devices[i].deviceHeight,
                     xPos: move_data.xPos,
-                    yPos: 0
+                    yPos: 0,
+                    score:move_data.score
                 }
             }
         }
@@ -108,8 +110,11 @@ io.on('connection', function(socket){
         socket.broadcast.to(client_id).emit("move_on", data);
     });
 
-    socket.on("game_over", function(screen_count){
-        socket.broadcast.emit("game_end");
+    socket.on("game_over", function(score){
+        devices.forEach((item) => {
+            console.log(item.client_id);
+            socket.broadcast.to(item.client_id).emit("game_end", score);
+        });
         socket.disconnect();
     });
 
