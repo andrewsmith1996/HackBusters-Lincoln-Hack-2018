@@ -11,11 +11,13 @@ var devices = [];
 var screen_count = 1;
 
 io.on('connection', function(socket){    
-    console.log('a user connected');
 
     socket.send(socket.id);
     
     socket.on('device-connected', function(data){
+
+        console.log('Screen ' + data.buttonRef + ' has connected.');
+        
         device = {};
         device['buttonRef'] = data.buttonRef;
         device['deviceHeight'] = data.height;
@@ -25,13 +27,6 @@ io.on('connection', function(socket){
        
         console.log(device);
         devices.push(device);
-
-        // let ready = checkIfReady();
-        // console.log(ready);
-        
-        // if(ready == true){
-        //     // socket.broadcast.to(devices[1].client_id).emit("HELLO");
-        // }
 
         // Is this the viewer?
         if(data.buttonRef == 'viewer'){
@@ -63,28 +58,25 @@ io.on('connection', function(socket){
     });
 
     socket.on("up", function(data){
+        let client_id = getClientId();
+        socket.broadcast.to(client_id).emit("up");
+    });
 
-       let client_id = 0;
+    socket.on("down", function(data){
+        let client_id = getClientId();
+        socket.broadcast.to(client_id).emit("down");
+     });
+
+    function getClientId(){
+        let client_id = 0;
         for (var i = 0; i < devices.length; i++){
             if (devices[i].buttonRef == screen_count){
                 client_id = devices[i].client_id;
             }
         }
 
-        socket.broadcast.to(client_id).emit("up");
-    });
-
-    socket.on("down", function(data){
-
-        let client_id = 0;
-         for (var i = 0; i < devices.length; i++){
-             if (devices[i].buttonRef == screen_count){
-                 client_id = devices[i].client_id;
-             }
-         }
-
-         socket.broadcast.to(client_id).emit("down");
-     });
+        return client_id;
+    }
 
     socket.on("moved", function(data){
         

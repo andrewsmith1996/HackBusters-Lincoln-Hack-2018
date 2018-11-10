@@ -6,7 +6,9 @@ $(function () {
     var screenHeight = $(window).innerHeight;
     var screenWidth = $(window).innerWidth;
     var up_timer;
-    
+    var down_timer;
+    const speed = 5;
+
     $(".select-screen button").click(function() {
 
         const data = {
@@ -36,10 +38,10 @@ $(function () {
                 $(".ready-screen .play-button").hide();
                 $(".ready-screen .hover-button").css("display", "block");
     
-                $('.ready-screen .hover-button').on('mousedown', function() {
-            
+                $('.ready-screen .hover-button')
+                .on('mousedown', function() {
                     socket.emit("up", screen);
-                }).on('mouseup mouseleave', function() {
+                }).on('mouseup ', function() {
                     socket.emit("down", screen);
                 });
             });
@@ -47,16 +49,25 @@ $(function () {
     });
 
     socket.on("up", function(data){
+        clearInterval(down_timer);
         var offset = $("#plane").offset();
         let xPos = offset.left; 
         up_timer = setInterval (function () { // timer to move element slowly
             xPos++;
             $('#plane').css('left', xPos + "px");
-        }, 100);
+        }, speed);
     });
 
     socket.on("down", function(data){
+
         clearInterval(up_timer);
+       
+        var offset = $("#plane").offset();
+        let xPos = offset.left; 
+        down_timer = setInterval (function () { // timer to move element slowly
+            xPos--;
+            $('#plane').css('left', xPos + "px");
+        }, speed);
     });
 
 
@@ -64,31 +75,21 @@ $(function () {
   
     socket.on("move_on", function(data){
 
-      
         $("#plane").show();
 
-       
-        // $("#plane").css
-        // while(xPos != (data.screenWidth - 50)){
-    
-            // }
         $('#plane').css('top',"0px");
-        $('#plane').css('left', (data.screenWidth / 2) + "px");
       
         let yPos = 0;
-        var offset = $("#plane").offset();
-        let xPos = offset.left;      
+        var offset = $("#plane").offset();  
 
         timer = setInterval (function () { // timer to move element slowly
             yPos++;
-            xPos--;
             $('#plane').css('top',yPos + "px");
-            $('#plane').css('left', xPos + "px");
             if (yPos == data.screenHeight){
                 clearInterval(timer);
                 socket.emit("moved", data);
             }
-        }, 100);
+        }, speed);
        
     });
     
