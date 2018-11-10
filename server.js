@@ -34,6 +34,10 @@ io.on('connection', function(socket){
         }
     });
 
+    socket.on('game_over', function(data){
+        console.log("over");
+    });
+
     socket.on('ready', function(){
        
         let client_id = 0;
@@ -93,7 +97,7 @@ io.on('connection', function(socket){
                 data = {
                     client_id:client_id,
                     screen: screen_count,
-                    devices:data.devices,
+                    devices:devices,
                     screenWidth:devices[i].deviceWidth,
                     screenHeight:devices[i].deviceHeight,
                 }
@@ -104,8 +108,9 @@ io.on('connection', function(socket){
         socket.broadcast.to(client_id).emit("move_on", data);
     });
 
-    socket.on("finished", function(data){
-        console.log("GAME OVER");
+    socket.on("game_over", function(screen_count){
+        socket.broadcast.emit("game_end");
+        socket.disconnect();
     });
 
 
