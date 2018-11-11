@@ -104,7 +104,7 @@ io.on('connection', function(socket){
                     screenWidth:move_data.deviceWidth,
                     screenHeight:move_data.deviceHeight,
                     xPos: move_data.xPos,
-                    yPos: 0,
+                    yPos: 1,
                     score:move_data.score
                 }
             }
@@ -116,7 +116,7 @@ io.on('connection', function(socket){
 
     socket.on("game_over", function(score){
         console.log("Game Ended");
-        io.emit('game_end', score, {for: 'everyone'});
+        // io.emit('game_end', score, {for: 'everyone'});
         socket.disconnect();
     });
 

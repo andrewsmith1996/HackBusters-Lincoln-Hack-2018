@@ -7,7 +7,7 @@ $(function () {
     var up_timer;
     var down_timer;
     var score;
-    const speed = 8;
+    const speed = 6;
 
     
     // Have we pressed the begin button?
@@ -153,7 +153,6 @@ $(function () {
 
         // Move the plane up 
         up_timer = setInterval (function () { 
-    
             xPos++;
 
             // Position the plane
@@ -165,6 +164,7 @@ $(function () {
                 clearInterval(down_timer);
                 clearInterval(up_timer);
                 // alert("END");
+                console.log('E');
                 socket.emit("game_over", score);
             }
         }, speed);
@@ -193,6 +193,7 @@ $(function () {
                 clearInterval(down_timer);
                 clearInterval(up_timer);
                 clearInterval(timer);
+                console.log('D');
                 socket.emit("game_over", score);
             }
         }, speed - 3);
@@ -202,6 +203,7 @@ $(function () {
     socket.on("move_screen", function(data){
        
         $('.play-screen').css('height', $(window).height());
+
 
         // Get the current score
         score = data.score;
@@ -228,6 +230,8 @@ $(function () {
                  clearInterval(down_timer);
                  clearInterval(up_timer);
                  clearInterval(timer);
+
+                 console.log('C');
                  // alert("END");
                  socket.emit("game_over", score);
              }
@@ -253,16 +257,19 @@ $(function () {
                 // alert("END");
                 socket.emit("game_over", score);
             }
-            
+
+       
             // Have we hit the end of the screen?
-            if (yPos >= ($(window).height() - $("#plane").height())){
+            if (yPos >= (($(window).height() - $("#plane").height()))){
                 // alert(data.screen >= data.devices.length - 1);
-               
+                console.log('A');
                 // Are we on the last device?
                 if(data.screen >= data.devices.length - 1){
+                    console.log('B');
                     clearInterval(timer);
                     clearInterval(down_timer);
                     clearInterval(up_timer);
+
                     // End the game
                     socket.emit("game_over", score);
 
