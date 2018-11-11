@@ -6,32 +6,46 @@
     <title>Hackbusters</title>
 <style>
 
-    #plane{
+   #plane{
         height:126px;
         width:50px;
         background-image:url('/images/plane.png');
         background-size:contain;
-        position:relative;
-        top:0;
+        position:absolute;
+        top:20px;
         left:50%;
-    }
-        #plane:after{
+        display:none;
+        transform:scale(0.7);
+        animation: rotate .1s steps(4) infinite;
+}
+ #plane:after{
             position:absolute;
             bottom:-10px;
             display:block;
             content:'';
             background-image:url('/images/prop.png');
-            background-repeat:no-repeat;
-            animation: propel .2s steps(4) infinite;
+            animation: propel .09s steps(4) infinite;
             height:10px;
             width:50px;
         }
 
-        @keyframes propel{
-        0%{background-position: 0 0;}
-        100%{background-position: 0 40px;}
+        #plane > div{
+            animation: rotate .1s steps(4) infinite;
+        }
+    
+
+    @keyframes propel{
+        0%{background-position: 0 0}
+        100%{background-position: 0 -80px;}
+      }
+
+    @keyframes rotate{
+        0%{transform:rotate(-50deg);}
+        100%{transform:rotate(50deg);}
       }
     
+
+
 </style>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1.0">
 
@@ -43,7 +57,7 @@
 
   </head>
   <body>
-        <div id="plane"></div>
+        <div id="plane"><div></div></div>
     
 
   </body>

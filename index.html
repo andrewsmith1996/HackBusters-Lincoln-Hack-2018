@@ -18,13 +18,11 @@
 
     <div class="container select-screen">
         <div class="row">
-            <div class="col-md-12">
-                <h3>Choose your device number.</h3>>
+            <div class="col-6">
+                <button class="btn btn-primary btn-block" type="button" data-ref="viewer">VIEWER</button>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <button class="btn btn-primary btn-block" type="button" data-ref="viewer">MAIN</button>
+            <div class="col-6">
+                <button class="btn btn-primary btn-block" type="button" data-ref="control">CONTROL</button>
             </div>
         </div>
         <div class="row">
@@ -72,6 +70,9 @@
     </div>
 
     <div class="container introduction">
+            <audio id="guile">
+            <source src="guile.mp3" type="audio/mpeg">
+          </audio>
         <div class="row">
             <div class="col-md-12">
                 <h1>It is May 16th 1943,</h1>
@@ -88,7 +89,8 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <button class="btn btn-primary btn-block" type="button">Continue...</button>
+                        <button class="btn btn-primary btn-block" type="button">I'm ready to play Hackbusters!</button>
+                        <button class="btn btn-primary stop_music" type="button">(plz stop annoying music)</button>
                     </div>
                 </div>
             </div>
@@ -106,23 +108,16 @@
     </div>
     
     <div class="play-screen">
-      
-        <p></p>
-
+            <p>Score:
+                <span id="score"></span><br>
+                <span id="area"></span>
+            </p>
+            
         <div id="plane"></div>
-        <div class="obstacle"></div>
-        <div class="obstacle"></div>
-        <div class="obstacle"></div>
+            
     </div>
 
-    <div class="container game-over-screen">
-        <div class="row">
-            <div class="col-md-12">
-               <h1>GAME OVER!</h1>
-               <h2></h2>
-            </div>
-        </div>
-    </div>
+   
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>

@@ -142,12 +142,13 @@ body{
         margin-top:100px;
         outline:none;
         transition:all .2s;
+        cursor:pointer;
 
-        &:hover,&:focus{
-            background: darken(white, 40%);
-            color:white;
-            border:2px solid black
-        }
+        // &:hover,&:focus{
+        //     background: darken(white, 40%);
+        //     color:white;
+        //     border:2px solid black
+        // }
 
         &:active{
             background: darken(white, 60%);
@@ -159,20 +160,23 @@ body{
     }
 }
 
+
 .play-screen{
     width:100%;
     position: relative;
+    height:100%;
     display:none;
     // padding-top:50px;
     opacity:0;
-    height:100%;
+    overflow:hidden;
 
     p{
-        position:absolute;
-        right:0;
-        top:30px;
-        // display:block;
         transform:rotate(90deg);
+        float:right;
+        margin-top:50%;
+        height:200px;
+        margin-right:80px;
+        text-align:center;
     }
 
     h3{
@@ -193,7 +197,8 @@ body{
         top:-20px;
         left:50%;
         display:none;
-        transform:scale(0.7);
+        transform:scale(0.5);
+        animation: rotate 2s infinite;
 
         &:after{
             position:absolute;
@@ -208,8 +213,14 @@ body{
     }
 
     @keyframes propel{
-        0%{background-position: 0 0;}
+        0%{background-position: 0 0}
         100%{background-position: 0 -80px;}
+      }
+
+    @keyframes rotate{
+        0%{transform:scale(0.5) rotate(-5deg);}
+        50%{transform:scale(0.5) rotate(5deg);}
+        100%{transform:scale(0.5) rotate(-5deg);}
       }
 
 
@@ -225,9 +236,7 @@ body{
 
 .game-over-screen{
     display:none;
-    width:100%;
-    height:100%;
-    padding-top:50px;
+    padding-top:20px;
 
     h1,h2{
         color:white;

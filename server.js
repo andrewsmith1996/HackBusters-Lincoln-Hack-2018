@@ -1,7 +1,8 @@
 var express = require('express');
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var app = express();
+var server = app.listen(1797);
+
+var io = require('socket.io').listen(server);
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -13,6 +14,7 @@ var screen_count = 1;
 io.on('connection', function(socket){    
 
     socket.send(socket.id);
+    
     socket.on('device-connected', function(data){
 
         console.log('Screen ' + data.buttonRef + ' has connected.');
@@ -23,26 +25,27 @@ io.on('connection', function(socket){
         device['deviceWidth'] = data.width;
         device['ready'] = data.ready;
         device['client_id'] = socket.id;
-
         
         console.log(device);
         devices.push(device);
 
         // Is this the viewer?
-        if(data.buttonRef == 'viewer'){
-            socket.emit('viewer', true);
+        if(data.buttonRef == 'control'){
+            socket.emit('control', true);
         }
     });
 
     socket.on('ready', function(){
-       
+        console.log("Ready to play");
         let client_id = 0;
+       
         var data = {};
 
+        console.log(screen_count);
+
         for (var i = 0; i < devices.length; i++){
-            if (devices[i].buttonRef == screen_count){
+            if (devices[i].buttonRef == '1'){
                 client_id = devices[i].client_id;
-                
                 data = {
                     client_id:client_id,
                     screen: screen_count,
@@ -56,24 +59,24 @@ io.on('connection', function(socket){
             }
         }
       
-        console.log("Emitting to client " + client_id + " screen " + data.screen);
-        socket.broadcast.to(client_id).emit("move_on", data);
+        socket.broadcast.to(client_id).emit("move_screen", data);
+        console.log("(First) Emitting to client " + client_id + " screen " + data.screen)
     });
 
-    socket.on("up", function(data){
+    socket.on("control_button_up", function(data){
         let client_id = getClientId();
-        socket.broadcast.to(client_id).emit("up");
+        socket.broadcast.to(client_id).emit("move_plane_up", data);
     });
 
-    socket.on("down", function(data){
+    socket.on("control_button_down", function(data){
         let client_id = getClientId();
-        socket.broadcast.to(client_id).emit("down");
+        socket.broadcast.to(client_id).emit("move_plane_down", data);
      });
 
     function getClientId(){
         let client_id = 0;
         for (var i = 0; i < devices.length; i++){
-            if (devices[i].buttonRef == screen_count){
+            if (parseInt(devices[i].buttonRef) == screen_count){
                 client_id = devices[i].client_id;
             }
         }
@@ -81,8 +84,9 @@ io.on('connection', function(socket){
         return client_id;
     }
 
-    socket.on("moved", function(move_data){
-        
+    socket.on("next_screen", function(move_data){
+
+        console.log("Moving to screen" + move_data.client_id);
         let client_id = 0;
 
         var data = {};
@@ -90,15 +94,15 @@ io.on('connection', function(socket){
         screen_count++;
         
         for (var i = 0; i < devices.length; i++){
-            if (devices[i].buttonRef == screen_count){
+            if (parseInt(devices[i].buttonRef) == screen_count){
                 client_id = devices[i].client_id;
                 
                 data = {
                     client_id:client_id,
                     screen: screen_count,
                     devices:devices,
-                    screenWidth:devices[i].deviceWidth,
-                    screenHeight:devices[i].deviceHeight,
+                    screenWidth:move_data.deviceWidth,
+                    screenHeight:move_data.deviceHeight,
                     xPos: move_data.xPos,
                     yPos: 0,
                     score:move_data.score
@@ -107,14 +111,12 @@ io.on('connection', function(socket){
         }
         
         console.log("Emitting to client " + client_id + " screen " + screen_count);
-        socket.broadcast.to(client_id).emit("move_on", data);
+        socket.broadcast.to(client_id).emit("move_screen", data);
     });
 
     socket.on("game_over", function(score){
-        devices.forEach((item) => {
-            console.log(item.client_id);
-            socket.broadcast.to(item.client_id).emit("game_end", score);
-        });
+        console.log("Game Ended");
+        io.emit('game_end', score, {for: 'everyone'});
         socket.disconnect();
     });
 
@@ -122,10 +124,6 @@ io.on('connection', function(socket){
   });
 
 app.use(express.static('htdocs'));
-
-http.listen(1797, function(){
-  console.log('listening on *:1797');
-});
 
 function checkIfReady(){
     let ready = true;
