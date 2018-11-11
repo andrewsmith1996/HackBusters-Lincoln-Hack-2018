@@ -4,11 +4,11 @@ $(function () {
     
     var socket = io('http://10.69.3.151:1797');
 
+    // Initialise variables
     var up_timer;
     var down_timer;
     var score;
     const speed = 6;
-
     
     // Have we pressed the begin button?
     $('.begin button.device-begin').on('click',function(){
@@ -40,9 +40,6 @@ $(function () {
             document.getElementById('guile').play();
         }
     });
-
-   
-
 
 
     // Have we selected the device number?
@@ -163,8 +160,7 @@ $(function () {
                 clearInterval(timer);
                 clearInterval(down_timer);
                 clearInterval(up_timer);
-                // alert("END");
-                console.log('E');
+
                 socket.emit("game_over", score);
             }
         }, speed);
@@ -193,7 +189,6 @@ $(function () {
                 clearInterval(down_timer);
                 clearInterval(up_timer);
                 clearInterval(timer);
-                console.log('D');
                 socket.emit("game_over", score);
             }
         }, speed - 3);
@@ -203,7 +198,6 @@ $(function () {
     socket.on("move_screen", function(data){
        
         $('.play-screen').css('height', $(window).height());
-
 
         // Get the current score
         score = data.score;
@@ -231,8 +225,6 @@ $(function () {
                  clearInterval(up_timer);
                  clearInterval(timer);
 
-                 console.log('C');
-                 // alert("END");
                  socket.emit("game_over", score);
              }
          }, speed - 3);
@@ -250,7 +242,6 @@ $(function () {
 
             // Have we hit top or bottom?
             if((xPos <= 0) || xPos >= $(window).width()){
-                console.log("HIT BOTTOM OR TOP");
                 clearInterval(timer);
                 clearInterval(down_timer);
                 clearInterval(up_timer);
@@ -261,11 +252,9 @@ $(function () {
        
             // Have we hit the end of the screen?
             if (yPos >= (($(window).height() - $("#plane").height()))){
-                // alert(data.screen >= data.devices.length - 1);
-                console.log('A');
+
                 // Are we on the last device?
                 if(data.screen >= data.devices.length - 1){
-                    console.log('B');
                     clearInterval(timer);
                     clearInterval(down_timer);
                     clearInterval(up_timer);
@@ -297,10 +286,7 @@ $(function () {
     // On the end game
     socket.on("game_end", function(score){
 
-
         $('body').removeClass('play');
-
-        
        
         // Fade out all the previous screens
         $(".play-screen").fadeOut();
@@ -309,15 +295,15 @@ $(function () {
         $(".ready-screen").fadeOut();
         $(".select-screen").fadeOut();
 
-        
-        var game_over_element = `
+
+        const game_over_element = `
         <div class="container game-over-screen">
-        <div class="row">
-        <div class="col-md-12">
-        <h1>GAME OVER!</h1>
-        <h2>Your score was ${ score } </h2>
-        </div>
-        </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>GAME OVER!</h1>
+                    <h2>Your score was ${score} </h2>
+                </div>
+            </div>
         </div>`
         
         //Fade in the new screen, with the score text

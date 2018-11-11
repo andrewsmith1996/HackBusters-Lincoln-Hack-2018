@@ -144,12 +144,6 @@ body{
         transition:all .2s;
         cursor:pointer;
 
-        // &:hover,&:focus{
-        //     background: darken(white, 40%);
-        //     color:white;
-        //     border:2px solid black
-        // }
-
         &:active{
             background: darken(white, 60%);
             -webkit-box-shadow: inset 0px 0px 10px #c1c1c1;
@@ -166,7 +160,6 @@ body{
     position: relative;
     height:100%;
     display:none;
-    // padding-top:50px;
     opacity:0;
     overflow:hidden;
 
@@ -181,10 +174,6 @@ body{
 
     h3{
         text-align:center;
-        // position:absolute;
-        // right:0;
-        // top:30px;
-        // display:block;
         transform:rotate(90deg);
     }
 
@@ -212,6 +201,7 @@ body{
         }
     }
 
+    // Sprites animations
     @keyframes propel{
         0%{background-position: 0 0}
         100%{background-position: 0 -80px;}
